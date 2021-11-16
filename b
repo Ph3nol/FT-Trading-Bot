@@ -43,6 +43,7 @@ instance_create() {
     touch ${INSTANCE_CONFIG_FILE} ${INSTANCE_DIRECTORY}/configs ${INSTANCE_DIRECTORY}/configs.backtest \
         ${INSTANCE_DIRECTORY}/tradesv3.sqlite \
         ${INSTANCE_DIRECTORY}/tradesv3.dryrun.sqlite
+    chmod -R 777 ${INSTANCE_DIRECTORY}
 }
 
 instance_remove() {
