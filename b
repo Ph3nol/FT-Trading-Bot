@@ -12,7 +12,7 @@ prepare() {
     DOCKER_FREQTRADE_IMAGE="ph3nol/freqtrade:latest"
     DOCKER_FREQTRADE_UI_IMAGE="ph3nol/freqtrade-ui:latest"
 
-    DOCKER_RUN="docker run --rm -it"
+    DOCKER_RUN="docker run --rm --restart -it"
     DOCKER_KILL="docker kill"
 
     if [[ `uname -m` == 'arm64' ]]; then
