@@ -1,3 +1,4 @@
+FT_DRY_RUN="true"
 FT_INSTANCE_NAME=""
 FT_STRATEGY="SMAOffsetV2" # .......... Change with your wanted Strategy (see ./strategies folder)
 FT_API_SERVER_PORT="12345" # ......... Choose a unique and free port for each instance, and use http(s)://<host>:<port> from UI to connect to

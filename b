@@ -68,12 +68,6 @@ instance_init() {
 
     . ${INSTANCE_CONFIG_FILE}
 
-    if [[ $FT_LIVE = "1" ]]; then
-        FT_DRY_RUN="false"
-    else
-        FT_DRY_RUN="true"
-    fi
-
     FT_CONFIGS_ARGS=""
     for CONFIG_FILE in "${FT_INSTANCE_CONFIGS[@]}"; do FT_CONFIGS_ARGS+="--config ${CONFIG_FILE} "; done
 
