@@ -68,9 +68,13 @@ Feeling generous?
 ### (Re)Build reference Docker images
 
 ```
-docker pull freqtradeorg/freqtrade:stable && \
-    docker build --file .docker/freqtrade/Dockerfile --tag ph3nol/freqtrade:latest --no-cache .
+docker pull freqtradeorg/freqtrade:stable
+docker buildx build --no-cache --push --platform linux/amd64 \
+    --file .docker/freqtrade/Dockerfile \
+    --tag ph3nol/freqtrade:latest .
 
 # Update .docker/freqtrade-ui/Dockerfile UI archive version before building Docker image
-docker build --file .docker/freqtrade-ui/Dockerfile --tag ph3nol/freqtrade-ui:latest --no-cache .
+docker buildx build --no-cache --push --platform linux/amd64 \
+    --file .docker/freqtrade-ui/Dockerfile \
+    --tag ph3nol/freqtrade-ui:latest .
 ```
