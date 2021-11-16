@@ -1,0 +1,7 @@
+{
+    "api_server": {
+        "jwt_secret_key": "xxx",
+        "username": "xxx",
+        "password": "xxx"
+    }
+}

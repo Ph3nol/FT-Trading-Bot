@@ -1,0 +1,16 @@
+{
+    "telegram": {
+        "enabled": false,
+        "token": "",
+        "chat_id": "",
+        "notification_settings": {
+            "status": "silent",
+            "warning": "on",
+            "startup": "off",
+            "buy": "on",
+            "sell": "on",
+            "buy_cancel": "on",
+            "sell_cancel": "on"
+        }
+    }
+}

@@ -1,0 +1,8 @@
+{
+    "exchange": {
+        "name": "kucoin",
+        "key": "xxx",
+        "secret": "xxx",
+        "password": "xxx"
+    }
+}

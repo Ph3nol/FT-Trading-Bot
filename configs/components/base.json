@@ -1,0 +1,8 @@
+{
+    "fiat_display_currency": "USD",
+    "dry_run": true,
+    "dry_run_wallet": 100,
+    "tradable_balance_ratio": 1,
+    "initial_state": "running",
+    "forcebuy_enable": true
+}

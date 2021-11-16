@@ -1,0 +1,7 @@
+{
+    "telegram": {
+        "enabled": true,
+        "token": "xxx",
+        "chat_id": "xxx"
+    }
+}
