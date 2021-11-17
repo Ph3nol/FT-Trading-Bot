@@ -13,7 +13,8 @@ prepare() {
     DOCKER_FREQTRADE_UI_IMAGE="ph3nol/freqtrade-ui:latest"
     DOCKER_CONTAINER_BASE_PREFIX="freqtrade-bot"
 
-    DOCKER_RUN="docker run --restart=always -it"
+    DOCKER_RUN="docker run --rm -it"
+    DOCKER_RUN_WITH_RESTART="docker run -d --restart=always -it"
     DOCKER_KILL="docker kill"
     DOCKER_RM="docker rm"
 
@@ -101,7 +102,7 @@ instance_update_backtesting_pairlists() {
     echo "Updating backtesting pairlists..."
 
     PAIRS_LIST=$(
-        ${DOCKER_RUN} --name $DOCKER_CONTAINER_NAME --network freqtrade-bots \
+        ${DOCKER_RUN} --name ${DOCKER_CONTAINER_NAME}-update-backtesting-pairslist --network freqtrade-bots \
             ${VOLUMES_ARGS} ${ENVS_ARGS} \
             ${DOCKER_FREQTRADE_IMAGE} test-pairlist ${FT_CONFIGS_ARGS} --print-json
     )
@@ -120,10 +121,16 @@ EOF
 instance_stop() {
     echo "Stopping..."
 
-    docker kill "${DOCKER_CONTAINER_BASE_NAME}-pairs" > /dev/null 2>&1; docker rm "${DOCKER_CONTAINER_BASE_NAME}-pairs" > /dev/null 2>&1
-    docker kill "${DOCKER_CONTAINER_BASE_NAME}-trade" > /dev/null 2>&1; docker rm "${DOCKER_CONTAINER_BASE_NAME}-trade" > /dev/null 2>&1
-    docker kill "${DOCKER_CONTAINER_BASE_NAME}-data" > /dev/null 2>&1; docker rm "${DOCKER_CONTAINER_BASE_NAME}-data" > /dev/null 2>&1
-    docker kill "${DOCKER_CONTAINER_BASE_NAME}-backtesting" > /dev/null 2>&1; docker rm "${DOCKER_CONTAINER_BASE_NAME}-backtesting" > /dev/null 2>&1
+    docker kill "${DOCKER_CONTAINER_BASE_NAME}-data-update-backtesting-pairslist" > /dev/null 2>&1
+    docker rm "${DOCKER_CONTAINER_BASE_NAME}-data-update-backtesting-pairslist" > /dev/null 2>&1
+    docker kill "${DOCKER_CONTAINER_BASE_NAME}-pairs" > /dev/null 2>&1
+    docker rm "${DOCKER_CONTAINER_BASE_NAME}-pairs" > /dev/null 2>&1
+    docker kill "${DOCKER_CONTAINER_BASE_NAME}-trade" > /dev/null 2>&1
+    docker rm "${DOCKER_CONTAINER_BASE_NAME}-trade" > /dev/null 2>&1
+    docker kill "${DOCKER_CONTAINER_BASE_NAME}-data" > /dev/null 2>&1
+    docker rm "${DOCKER_CONTAINER_BASE_NAME}-data" > /dev/null 2>&1
+    docker kill "${DOCKER_CONTAINER_BASE_NAME}-backtesting" > /dev/null 2>&1
+    docker rm "${DOCKER_CONTAINER_BASE_NAME}-backtesting" > /dev/null 2>&1
 }
 
 instance_init_backtesting() {
@@ -203,16 +210,17 @@ handle_instance() {
             instance_init
 
             echo "Loading pairs..."
-            ${DOCKER_RUN} --name $DOCKER_CONTAINER_NAME --network freqtrade-bots \
+            ${DOCKER_RUN} --name ${DOCKER_CONTAINER_NAME} --network freqtrade-bots \
                 ${VOLUMES_ARGS} ${ENVS_ARGS} \
                 ${DOCKER_FREQTRADE_IMAGE} list-pairs ${FT_CONFIGS_ARGS} --quote ${ACTION_ARGS[0]} --print-json
             exit 0
             ;;
         trade)
             instance_init
+            instance_stop > /dev/null 2>&1
 
             echo "Trading..."
-            ${DOCKER_RUN} -d --name $DOCKER_CONTAINER_NAME --network freqtrade-bots \
+            ${DOCKER_RUN_WITH_RESTART} --name ${DOCKER_CONTAINER_NAME} --network freqtrade-bots \
                 ${VOLUMES_ARGS} ${ENVS_ARGS} -p ${FT_API_SERVER_PORT}:8080 \
                 ${DOCKER_FREQTRADE_IMAGE} trade --strategy ${FT_STRATEGY} ${FT_CONFIGS_ARGS} \
                     > /dev/null 2>&1
@@ -231,12 +239,12 @@ handle_instance() {
             echo "Downloading data..."
 
             if [ ! "${ACTION_ARGS[1]}" = "" ]; then
-                ${DOCKER_RUN} --name $DOCKER_CONTAINER_NAME --network freqtrade-bots \
+                ${DOCKER_RUN} --name ${DOCKER_CONTAINER_NAME} --network freqtrade-bots \
                     ${VOLUMES_ARGS} ${ENVS_ARGS} \
                     ${DOCKER_FREQTRADE_IMAGE} download-data ${FT_CONFIGS_ARGS} --days ${ACTION_ARGS[0]} -t {1m,5m,15m,1h,4h,1d} \
                         --pairs ${ACTION_ARGS[1]}
             else
-                ${DOCKER_RUN} --name $DOCKER_CONTAINER_NAME --network freqtrade-bots \
+                ${DOCKER_RUN} --name ${DOCKER_CONTAINER_NAME} --network freqtrade-bots \
                     ${VOLUMES_ARGS} ${ENVS_ARGS} \
                     ${DOCKER_FREQTRADE_IMAGE} download-data ${FT_CONFIGS_ARGS} --days ${ACTION_ARGS[0]} -t {1m,5m,15m,1h,4h,1d} \
                         --erase
@@ -247,7 +255,7 @@ handle_instance() {
             instance_init && instance_init_backtesting
 
             echo "Backtesting..."
-            ${DOCKER_RUN} --name $DOCKER_CONTAINER_NAME --network freqtrade-bots \
+            ${DOCKER_RUN} --name ${DOCKER_CONTAINER_NAME} --network freqtrade-bots \
                 ${VOLUMES_ARGS} ${ENVS_ARGS} \
                 ${DOCKER_FREQTRADE_IMAGE} backtesting --enable-protections --strategy ${FT_STRATEGY} ${FT_CONFIGS_ARGS}
             exit 0
@@ -266,7 +274,7 @@ handle_instance() {
 ui_start() {
     echo "Starting..."
 
-    ${DOCKER_RUN} -d --name ${DOCKER_CONTAINER_NAME} \
+    ${DOCKER_RUN_WITH_RESTART} --name ${DOCKER_CONTAINER_NAME} \
         ${VOLUMES_ARGS} ${ENVS_ARGS} -p ${UI_PUBLIC_PORT}:80 \
         ${DOCKER_FREQTRADE_UI_IMAGE} \
          > /dev/null 2>&1
@@ -299,7 +307,7 @@ handle_ui() {
 
 handle_list() {
     INSTANCES=$(docker ps --no-trunc -f "name=${DOCKER_CONTAINER_BASE_PREFIX}" | sed "1 d")
-    echo "$INSTANCES"
+    # @todo To be continued
 }
 
 prepare

@@ -49,6 +49,13 @@ Suppose you want to create an instance named `unicorn01`.
 
 Just use `./b` from your Trading Bot directory.
 
+## Backtesting
+
+```
+./b instance unicorn data 10 # Download 10 days of data for `unicorn` instance
+./b instance unicorn backtesting # Let's backtest!
+```
+
 ## Thanks
 
 ![Thanks](https://media.giphy.com/media/PoImMjCPa8QaiBWJd0/giphy.gif)
