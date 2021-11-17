@@ -11,6 +11,7 @@ fi
 prepare() {
     DOCKER_FREQTRADE_IMAGE="ph3nol/freqtrade:latest"
     DOCKER_FREQTRADE_UI_IMAGE="ph3nol/freqtrade-ui:latest"
+    DOCKER_CONTAINER_BASE_PREFIX="freqtrade-bot"
 
     DOCKER_RUN="docker run --restart=always -it"
     DOCKER_KILL="docker kill"
@@ -92,7 +93,7 @@ instance_init() {
     ENVS_ARGS=""
     for ENV in "${ENVS[@]}"; do ENVS_ARGS+="-e ${ENV} "; done
 
-    DOCKER_CONTAINER_BASE_NAME="freqtrade-bot-${INSTANCE}"
+    DOCKER_CONTAINER_BASE_NAME="${DOCKER_CONTAINER_BASE_PREFIX}-${INSTANCE}"
     DOCKER_CONTAINER_NAME="${DOCKER_CONTAINER_BASE_NAME}-${ACTION}"
 }
 
@@ -119,14 +120,10 @@ EOF
 instance_stop() {
     echo "Stopping..."
 
-    docker kill "${DOCKER_CONTAINER_BASE_NAME}-pairs" > /dev/null 2>&1 \
-        && docker rm "${DOCKER_CONTAINER_BASE_NAME}-pairs" > /dev/null 2>&1
-    docker kill "${DOCKER_CONTAINER_BASE_NAME}-trade" > /dev/null 2>&1 \
-        && docker rm "${DOCKER_CONTAINER_BASE_NAME}-trade" > /dev/null 2>&1
-    docker kill "${DOCKER_CONTAINER_BASE_NAME}-data" > /dev/null 2>&1 \
-        && docker rm "${DOCKER_CONTAINER_BASE_NAME}-data" > /dev/null 2>&1
-    docker kill "${DOCKER_CONTAINER_BASE_NAME}-backtesting" > /dev/null 2>&1 \
-        && docker rm "${DOCKER_CONTAINER_BASE_NAME}-backtesting" > /dev/null 2>&1
+    docker kill "${DOCKER_CONTAINER_BASE_NAME}-pairs" > /dev/null 2>&1; docker rm "${DOCKER_CONTAINER_BASE_NAME}-pairs" > /dev/null 2>&1
+    docker kill "${DOCKER_CONTAINER_BASE_NAME}-trade" > /dev/null 2>&1; docker rm "${DOCKER_CONTAINER_BASE_NAME}-trade" > /dev/null 2>&1
+    docker kill "${DOCKER_CONTAINER_BASE_NAME}-data" > /dev/null 2>&1; docker rm "${DOCKER_CONTAINER_BASE_NAME}-data" > /dev/null 2>&1
+    docker kill "${DOCKER_CONTAINER_BASE_NAME}-backtesting" > /dev/null 2>&1; docker rm "${DOCKER_CONTAINER_BASE_NAME}-backtesting" > /dev/null 2>&1
 }
 
 instance_init_backtesting() {
@@ -300,11 +297,20 @@ handle_ui() {
     esac
 }
 
+handle_list() {
+    INSTANCES=$(docker ps --no-trunc -f "name=${DOCKER_CONTAINER_BASE_PREFIX}" | sed "1 d")
+    echo "$INSTANCES"
+}
+
 prepare
 
 COMMAND="${1}"
 
 case ${COMMAND} in
+    list)
+        handle_list
+        exit 0
+        ;;
     i | instance)
         INSTANCE="${2}"
         ACTION="${3}"
