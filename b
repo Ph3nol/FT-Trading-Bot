@@ -121,16 +121,16 @@ EOF
 instance_stop() {
     echo "Stopping..."
 
-    docker kill "${DOCKER_CONTAINER_BASE_NAME}-data-update-backtesting-pairslist" > /dev/null 2>&1
-    docker rm "${DOCKER_CONTAINER_BASE_NAME}-data-update-backtesting-pairslist" > /dev/null 2>&1
-    docker kill "${DOCKER_CONTAINER_BASE_NAME}-pairs" > /dev/null 2>&1
-    docker rm "${DOCKER_CONTAINER_BASE_NAME}-pairs" > /dev/null 2>&1
-    docker kill "${DOCKER_CONTAINER_BASE_NAME}-trade" > /dev/null 2>&1
-    docker rm "${DOCKER_CONTAINER_BASE_NAME}-trade" > /dev/null 2>&1
-    docker kill "${DOCKER_CONTAINER_BASE_NAME}-data" > /dev/null 2>&1
-    docker rm "${DOCKER_CONTAINER_BASE_NAME}-data" > /dev/null 2>&1
-    docker kill "${DOCKER_CONTAINER_BASE_NAME}-backtesting" > /dev/null 2>&1
-    docker rm "${DOCKER_CONTAINER_BASE_NAME}-backtesting" > /dev/null 2>&1
+    ${DOCKER_KILL} "${DOCKER_CONTAINER_BASE_NAME}-data-update-backtesting-pairslist" > /dev/null 2>&1
+    ${DOCKER_RM} "${DOCKER_CONTAINER_BASE_NAME}-data-update-backtesting-pairslist" > /dev/null 2>&1
+    ${DOCKER_KILL} "${DOCKER_CONTAINER_BASE_NAME}-pairs" > /dev/null 2>&1
+    ${DOCKER_RM} "${DOCKER_CONTAINER_BASE_NAME}-pairs" > /dev/null 2>&1
+    ${DOCKER_KILL} "${DOCKER_CONTAINER_BASE_NAME}-trade" > /dev/null 2>&1
+    ${DOCKER_RM} "${DOCKER_CONTAINER_BASE_NAME}-trade" > /dev/null 2>&1
+    ${DOCKER_KILL} "${DOCKER_CONTAINER_BASE_NAME}-data" > /dev/null 2>&1
+    ${DOCKER_RM} "${DOCKER_CONTAINER_BASE_NAME}-data" > /dev/null 2>&1
+    ${DOCKER_KILL} "${DOCKER_CONTAINER_BASE_NAME}-backtesting" > /dev/null 2>&1
+    ${DOCKER_RM} "${DOCKER_CONTAINER_BASE_NAME}-backtesting" > /dev/null 2>&1
 }
 
 instance_init_backtesting() {
@@ -286,6 +286,7 @@ ui_stop() {
     echo "Stopping..."
 
     ${DOCKER_KILL} ${DOCKER_CONTAINER_NAME} > /dev/null 2>&1
+    ${DOCKER_RM} ${DOCKER_CONTAINER_NAME} > /dev/null 2>&1
 }
 
 handle_ui() {
