@@ -19,6 +19,7 @@ Do not risk money which you are afraid to lose. **USE THIS APPLICATION AT YOUR O
 
 ### Requirements
 
+* A cryptocurrency exchange account, like [Binance](https://www.binance.com/fr/register?ref=69525434) or [Kucoin](https://www.kucoin.com/ucenter/signup?rcode=rJ4U44Y)
 * [Docker](https://www.docker.com/) #CaptainObvious
 
 ### Get this Trading Bot
@@ -57,9 +58,10 @@ You are using this project and you want to contribute?
 Feeling generous?
 
 * **BTC** -> `1MksZdEXqFwqNhEiPT5sLhgWijuCH42r9c`
-* **ETH/USDT/..**. (or other ERC20 loving crypto) -> `0x3167ddc7a6b47a0af1ce5270e067a70b997fd313`
-* Register to [Binance](https://www.binance.com/fr/register?ref=69525434) following this [sponsored link](https://www.binance.com/fr/register?ref=69525434)
-* Register to [Kucoin](https://www.kucoin.com/ucenter/signup?rcode=rJ4U44Y) following this [sponsored link](https://www.kucoin.com/ucenter/signup?rcode=rJ4U44Y)
+* **ETH** (ERC20) -> `0x3167ddc7a6b47a0af1ce5270e067a70b997fd313`
+* **BSC - Binance Smart Chain** (BEP20) -> `0x3167ddc7a6b47a0af1ce5270e067a70b997fd313`
+* **Solana** (SOL) -> `DsftXATN6aQe5ppjByzQyJAQ2fJkZcN9UDF8HDiUY7iH`
+* **TRX** (TRC20) -> `TVurVvbyXDzqTKhVXj1eq3U2T8UfVD4KsD`
 
 ## Development
 

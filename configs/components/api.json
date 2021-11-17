@@ -5,7 +5,6 @@
         "listen_port": 8080,
         "verbosity": "error",
         "CORS_origins": [
-            "http://localhost:22222",
             "http://trading.bot",
             "https://trading.bot"
         ],
