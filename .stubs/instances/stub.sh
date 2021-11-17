@@ -18,6 +18,7 @@ FT_INSTANCE_CONFIGS=(
     # /configs/private/exchange.binance.json
     # /configs/components/telegram.json
     # /configs/private/telegram.json
+    # /configs/components/do-not-run-at-start.json
 )
 
 # Add some configuration files for backesting
