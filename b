@@ -12,8 +12,9 @@ prepare() {
     DOCKER_FREQTRADE_IMAGE="ph3nol/freqtrade:latest"
     DOCKER_FREQTRADE_UI_IMAGE="ph3nol/freqtrade-ui:latest"
 
-    DOCKER_RUN="docker run --rm --restart -it"
+    DOCKER_RUN="docker run --restart=always -it"
     DOCKER_KILL="docker kill"
+    DOCKER_RM="docker rm"
 
     if [[ `uname -m` == 'arm64' ]]; then
         DOCKER_RUN="${DOCKER_RUN} --platform linux/amd64"
@@ -118,10 +119,14 @@ EOF
 instance_stop() {
     echo "Stopping..."
 
-    docker kill "${DOCKER_CONTAINER_BASE_NAME}-pairs" > /dev/null 2>&1
-    docker kill "${DOCKER_CONTAINER_BASE_NAME}-trade" > /dev/null 2>&1
-    docker kill "${DOCKER_CONTAINER_BASE_NAME}-data" > /dev/null 2>&1
-    docker kill "${DOCKER_CONTAINER_BASE_NAME}-backtesting" > /dev/null 2>&1
+    docker kill "${DOCKER_CONTAINER_BASE_NAME}-pairs" > /dev/null 2>&1 \
+        && docker rm "${DOCKER_CONTAINER_BASE_NAME}-pairs" > /dev/null 2>&1
+    docker kill "${DOCKER_CONTAINER_BASE_NAME}-trade" > /dev/null 2>&1 \
+        && docker rm "${DOCKER_CONTAINER_BASE_NAME}-trade" > /dev/null 2>&1
+    docker kill "${DOCKER_CONTAINER_BASE_NAME}-data" > /dev/null 2>&1 \
+        && docker rm "${DOCKER_CONTAINER_BASE_NAME}-data" > /dev/null 2>&1
+    docker kill "${DOCKER_CONTAINER_BASE_NAME}-backtesting" > /dev/null 2>&1 \
+        && docker rm "${DOCKER_CONTAINER_BASE_NAME}-backtesting" > /dev/null 2>&1
 }
 
 instance_init_backtesting() {
