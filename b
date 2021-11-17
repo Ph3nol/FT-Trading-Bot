@@ -41,7 +41,7 @@ instance_create() {
     echo "$(sed "1s/.*/FT_INSTANCE_NAME=\""${INSTANCE}"\"/" ${INSTANCE_CONFIG_FILE})" > ${INSTANCE_CONFIG_FILE}
 
     mkdir -p ${INSTANCE_DIRECTORY} ${INSTANCE_DIRECTORY}/user_data
-    touch ${INSTANCE_CONFIG_FILE} ${INSTANCE_DIRECTORY}/configs ${INSTANCE_DIRECTORY}/configs.backtest \
+    touch ${INSTANCE_CONFIG_FILE} \
         ${INSTANCE_DIRECTORY}/tradesv3.sqlite \
         ${INSTANCE_DIRECTORY}/tradesv3.dryrun.sqlite
     chmod -R 777 ${INSTANCE_DIRECTORY}
