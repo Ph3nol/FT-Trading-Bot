@@ -11,6 +11,7 @@ FT_DRY_RUN_WALLET="500" # ............ Used for dry-run mode and backtesting
 FT_INSTANCE_CONFIGS=(
     /configs/components/base.json
     /configs/private/base.config.1.json
+    # /configs/components/protections.json
     /configs/components/api.json
     # /configs/private/api.json
     /configs/components/exchange.json
