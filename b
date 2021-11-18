@@ -40,7 +40,7 @@ instance_create() {
     echo "Creating..."
 
     cp ${PWD}/.stubs/instances/stub.sh ${INSTANCE_CONFIG_FILE}
-    echo "$(sed "1s/.*/FT_INSTANCE_NAME=\""${INSTANCE}"\"/" ${INSTANCE_CONFIG_FILE})" > ${INSTANCE_CONFIG_FILE}
+    echo "$(sed "2s/.*/FT_INSTANCE_NAME=\""${INSTANCE}"\"/" ${INSTANCE_CONFIG_FILE})" > ${INSTANCE_CONFIG_FILE}
 
     mkdir -p ${INSTANCE_DIRECTORY} ${INSTANCE_DIRECTORY}/user_data
     touch ${INSTANCE_CONFIG_FILE} \
