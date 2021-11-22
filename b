@@ -255,9 +255,13 @@ handle_instance() {
             instance_init && instance_init_backtesting
 
             echo "Backtesting..."
+            FT_BACKTEST_TIMERANGE_ARG=""
+            if [ ! -z ${ACTION_ARGS[0]} ]; then
+                FT_BACKTEST_TIMERANGE_ARG="--timerange ${ACTION_ARGS[0]}"
+            fi
             ${DOCKER_RUN} --name ${DOCKER_CONTAINER_NAME} --network freqtrade-bots \
                 ${VOLUMES_ARGS} ${ENVS_ARGS} \
-                ${DOCKER_FREQTRADE_IMAGE} backtesting --enable-protections --strategy ${FT_STRATEGY} ${FT_CONFIGS_ARGS}
+                ${DOCKER_FREQTRADE_IMAGE} backtesting --enable-protections --strategy ${FT_STRATEGY} ${FT_CONFIGS_ARGS} ${FT_BACKTEST_TIMERANGE_ARG}
             exit 0
             ;;
         stop)
