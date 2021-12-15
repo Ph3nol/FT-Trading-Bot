@@ -181,6 +181,7 @@ display_help() {
     echo "    ./`basename ${0}` instance <instance-name> create ...................... Create/Init an instance"
     echo "    ./`basename ${0}` instance <instance-name> trade ....................... Trade"
     echo "    ./`basename ${0}` instance <instance-name> pairs <quote> ............... List available exchange pairs"
+    echo "    ./`basename ${0}` instance <instance-name> configs-pairs <quote> ....... Set TMP pairs, from configs"
     echo "    ./`basename ${0}` instance <instance-name> data <days-count> ........... Download data for backtests"
     echo "    ./`basename ${0}` instance <instance-name> backtesting <from-date> ..... Run backtest (<from-date> format: 20211102)"
     echo "    ./`basename ${0}` instance <instance-name> reset ....................... Reset instance data"
@@ -215,6 +216,11 @@ handle_instance() {
                 ${DOCKER_FREQTRADE_IMAGE} list-pairs ${FT_CONFIGS_ARGS} --quote ${ACTION_ARGS[0]} --print-json
             exit 0
             ;;
+        configs-pairs)
+            instance_init
+            instance_update_backtesting_pairlists
+            exit 0
+            ;;
         trade)
             instance_init
             instance_stop > /dev/null 2>&1
@@ -229,11 +235,7 @@ handle_instance() {
             ;;
         data)
             instance_init
-
-            if [ "${ACTION_ARGS[1]}" = "" ]; then
-                instance_update_backtesting_pairlists
-            fi
-
+            instance_update_backtesting_pairlists
             instance_init_backtesting
 
             echo "Downloading data..."
