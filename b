@@ -17,6 +17,7 @@ prepare() {
     DOCKER_RUN_WITH_RESTART="docker run -d --restart=always -it"
     DOCKER_KILL="docker kill"
     DOCKER_RM="docker rm"
+    DOCKER_LOGS="docker logs"
 
     if [[ `uname -m` == 'arm64' ]]; then
         DOCKER_RUN="${DOCKER_RUN} --platform linux/amd64"
@@ -133,6 +134,12 @@ instance_stop() {
     ${DOCKER_RM} "${DOCKER_CONTAINER_BASE_NAME}-backtesting" > /dev/null 2>&1
 }
 
+instance_logs() {
+    echo "Tailing instance logs..."
+
+    ${DOCKER_LOGS} -f ${DOCKER_CONTAINER_NAME}
+}
+
 instance_init_backtesting() {
     echo "Initializing backtesting..."
 
@@ -186,6 +193,7 @@ display_help() {
     echo "    ./`basename ${0}` instance <instance-name> backtesting <from-date> ..... Run backtest (<from-date> format: 20211102)"
     echo "    ./`basename ${0}` instance <instance-name> reset ....................... Reset instance data"
     echo "    ./`basename ${0}` instance <instance-name> remove ...................... Remove instance"
+    echo "    ./`basename ${0}` instance <instance-name> logs ........................ Tail running instance Freqtrade logs"
     echo ""
     echo "    ./`basename ${0}` ui start ............................................. Start UI"
     echo "    ./`basename ${0}` ui stop .............................................. Stop UI"
@@ -268,6 +276,10 @@ handle_instance() {
             ;;
         stop)
             instance_init && instance_stop
+            exit 0
+            ;;
+        logs)
+            instance_init && instance_logs
             exit 0
             ;;
     *)
