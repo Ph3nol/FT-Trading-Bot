@@ -20,7 +20,7 @@ COPY . /app
 
 # The below flag should be removed, it's an incompatibility between
 # webpack and node17
-RUN NODE_OPTIONS=--openssl-legacy-provider yarn build
+RUN NODE_OPTIONS="--openssl-legacy-provider --max_old_space_size=8198" yarn build
 
 FROM nginx:1.21.4-alpine
 COPY  --from=ui-builder /app/dist /etc/nginx/html
