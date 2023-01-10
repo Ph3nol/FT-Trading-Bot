@@ -21,8 +21,7 @@ COPY . /app
 # The below flag should be removed, it's an incompatibility between
 # webpack and node17
 # ENV NODE_OPTIONS=--openssl-legacy-provider
-ENV NODE_OPTIONS=--max-old-space-size=8198
-RUN yarn build
+RUN NODE_OPTIONS=--max-old-space-size=8198 yarn build
 
 FROM nginx:1.21.4-alpine
 COPY  --from=ui-builder /app/dist /etc/nginx/html
