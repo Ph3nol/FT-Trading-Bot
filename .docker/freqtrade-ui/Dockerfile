@@ -6,6 +6,10 @@ WORKDIR /app
 
 # ENV PATH /usr/src/app/node_modules/.bin:$PATH
 
+RUN wget --quiet https://github.com/freqtrade/frequi/archive/refs/tags/0.6.3.tar.gz -O /tmp/ui.tar.gz \
+    && tar xf /tmp/ui.tar.gz -C /app --strip 1 \
+    && rm /tmp/ui.tar.gz
+
 COPY package.json /app/package.json
 COPY yarn.lock /app/yarn.lock
 
