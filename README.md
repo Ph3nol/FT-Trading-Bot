@@ -27,13 +27,14 @@ Do not risk money which you are afraid to lose. **USE THIS APPLICATION AT YOUR O
 ```
 mkdir fq-trading-bot && cd fq-trading-bot
 git clone https://github.com/Ph3nol/FT-Trading-Bot.git .
-./b
+./b install
 ```
 
 ### Configure & Customize
 
 * Adapt basic private generated files into `./configs/private` — **of course you can add yours!**
-* Use or add your best strategies into `./strategies` —  **feel free to open Pull Requests with your best ones!**
+* Use or add your best strategies into `./strategies` —  **first official ones are into official/ dedicated directory!**
+* Use or add your hyperopts into `./hyperopts`
 
 ### Create and configure your first instance
 

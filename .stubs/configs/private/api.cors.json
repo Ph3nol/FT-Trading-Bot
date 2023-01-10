@@ -1,0 +1,7 @@
+{
+    "api_server": {
+        "CORS_origins": [
+            "http://localhost"
+        ]
+    }
+}

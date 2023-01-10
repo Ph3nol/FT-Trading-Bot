@@ -9,10 +9,12 @@ if [ ! -d "${BASE_CONFIGS_DIRECTORY}" ] || [ ! -d "${BASE_INSTANCES_DIRECTORY}" 
 fi
 
 prepare() {
-    DOCKER_FREQTRADE_IMAGE="ph3nol/freqtrade:latest"
-    DOCKER_FREQTRADE_UI_IMAGE="ph3nol/freqtrade-ui:latest"
-    DOCKER_CONTAINER_BASE_PREFIX="freqtrade-bot"
+    DOCKER_FREQTRADE_IMAGE="ph3nol/ftbot/freqtrade:local"
+    DOCKER_FREQTRADE_UI_IMAGE="ph3nol/ftbot/freqtrade-ui:local"
+    DOCKER_CONTAINER_BASE_PREFIX="freqtrade-bots"
+    DOCKER_NETWORK="${DOCKER_CONTAINER_BASE_PREFIX}-network"
 
+    DOCKER_BUILD="docker build"
     DOCKER_RUN="docker run --rm -it"
     DOCKER_RUN_WITH_RESTART="docker run -d --restart=always -it"
     DOCKER_KILL="docker kill"
@@ -20,10 +22,11 @@ prepare() {
     DOCKER_LOGS="docker logs"
 
     if [[ `uname -m` == 'arm64' ]]; then
+        DOCKER_BUILD="${DOCKER_BUILD} --platform linux/amd64"
         DOCKER_RUN="${DOCKER_RUN} --platform linux/amd64"
     fi
 
-    docker network create freqtrade-bots > /dev/null 2>&1
+    docker network create ${DOCKER_NETWORK} > /dev/null 2>&1
 
     CONFIGS_PRIVATE_DIRECTORY="${BASE_CONFIGS_DIRECTORY}/private"
     if [ ! -d "${CONFIGS_PRIVATE_DIRECTORY}" ]; then mkdir ${CONFIGS_PRIVATE_DIRECTORY}; fi
@@ -61,8 +64,6 @@ instance_remove() {
 }
 
 instance_init() {
-    echo "Initializing..."
-
     TMP_CONFIG_EXCHANGE_PAIRSLIST_FILE_NAME="${INSTANCE}.config.exchange.pairs.json"
     TMP_CONFIG_EXCHANGE_PAIRSLIST_FILE="${BASE_TMP_DIRECTORY}/${TMP_CONFIG_EXCHANGE_PAIRSLIST_FILE_NAME}"
 
@@ -103,7 +104,7 @@ instance_update_backtesting_pairlists() {
     echo "Updating backtesting pairlists..."
 
     PAIRS_LIST=$(
-        ${DOCKER_RUN} --name ${DOCKER_CONTAINER_NAME}-update-backtesting-pairslist --network freqtrade-bots \
+        ${DOCKER_RUN} --name ${DOCKER_CONTAINER_NAME}-update-backtesting-pairslist --network ${DOCKER_NETWORK} \
             ${VOLUMES_ARGS} ${ENVS_ARGS} \
             ${DOCKER_FREQTRADE_IMAGE} test-pairlist ${FT_CONFIGS_ARGS} --print-json
     )
@@ -141,8 +142,6 @@ instance_logs() {
 }
 
 instance_init_backtesting() {
-    echo "Initializing backtesting..."
-
     for CONFIG_BACKTEST_FILE in "${FT_INSTANCE_CONFIGS_BACKTESTING[@]}"; do FT_CONFIGS_ARGS+="--config ${CONFIG_BACKTEST_FILE} "; done
 
     if [ -f "${TMP_CONFIG_EXCHANGE_PAIRSLIST_FILE}" ]; then
@@ -167,23 +166,8 @@ instance_display_informations() {
     fi
 }
 
-ui_init() {
-    echo "Initializing..."
-
-    VOLUMES=(
-        "/etc/localtime:/etc/localtime:ro"
-    )
-    VOLUMES_ARGS=""
-
-    ENVS_ARGS=""
-
-    DOCKER_CONTAINER_NAME="freqtrade-bot-ui"
-
-    UI_PUBLIC_PORT="${ACTION_ARGS[0]:-22222}"
-}
-
 display_help() {
-    echo "🤙 Trading Bot command usage:"
+    echo "🚀 Trading Bot command usage:"
     echo ""
     echo "    ./`basename ${0}` instance <instance-name> create ...................... Create/Init an instance"
     echo "    ./`basename ${0}` instance <instance-name> trade ....................... Trade"
@@ -198,7 +182,7 @@ display_help() {
     echo "    ./`basename ${0}` ui start ............................................. Start UI"
     echo "    ./`basename ${0}` ui stop .............................................. Stop UI"
     echo ""
-    echo "    — Note that you can use './`basename ${0}` i <...>' as an alias for './`basename ${0}` instance <...>'"
+    echo "    👉 Note that you can use './`basename ${0}` i <...>' as an alias for './`basename ${0}` instance <...>'"
 }
 
 handle_instance() {
@@ -218,8 +202,8 @@ handle_instance() {
         pairs)
             instance_init
 
-            echo "Loading pairs..."
-            ${DOCKER_RUN} --name ${DOCKER_CONTAINER_NAME} --network freqtrade-bots \
+            echo "🚥 Loading pairs..."
+            ${DOCKER_RUN} --name ${DOCKER_CONTAINER_NAME} --network ${DOCKER_NETWORK} \
                 ${VOLUMES_ARGS} ${ENVS_ARGS} \
                 ${DOCKER_FREQTRADE_IMAGE} list-pairs ${FT_CONFIGS_ARGS} --quote ${ACTION_ARGS[0]} --print-json
             exit 0
@@ -233,8 +217,8 @@ handle_instance() {
             instance_init
             instance_stop > /dev/null 2>&1
 
-            echo "Trading..."
-            ${DOCKER_RUN_WITH_RESTART} --name ${DOCKER_CONTAINER_NAME} --network freqtrade-bots \
+            echo "🚥 Trading..."
+            ${DOCKER_RUN_WITH_RESTART} --name ${DOCKER_CONTAINER_NAME} --network ${DOCKER_NETWORK} \
                 ${VOLUMES_ARGS} ${ENVS_ARGS} -p ${FT_API_SERVER_PORT}:8080 \
                 ${DOCKER_FREQTRADE_IMAGE} trade --strategy ${FT_STRATEGY} ${FT_CONFIGS_ARGS} \
                     > /dev/null 2>&1
@@ -246,15 +230,15 @@ handle_instance() {
             instance_update_backtesting_pairlists
             instance_init_backtesting
 
-            echo "Downloading data..."
+            echo "🚥 Downloading data..."
 
             if [ ! "${ACTION_ARGS[1]}" = "" ]; then
-                ${DOCKER_RUN} --name ${DOCKER_CONTAINER_NAME} --network freqtrade-bots \
+                ${DOCKER_RUN} --name ${DOCKER_CONTAINER_NAME} --network ${DOCKER_NETWORK} \
                     ${VOLUMES_ARGS} ${ENVS_ARGS} \
                     ${DOCKER_FREQTRADE_IMAGE} download-data ${FT_CONFIGS_ARGS} --days ${ACTION_ARGS[0]} -t {1m,5m,15m,1h,4h,1d} \
                         --pairs ${ACTION_ARGS[1]}
             else
-                ${DOCKER_RUN} --name ${DOCKER_CONTAINER_NAME} --network freqtrade-bots \
+                ${DOCKER_RUN} --name ${DOCKER_CONTAINER_NAME} --network ${DOCKER_NETWORK} \
                     ${VOLUMES_ARGS} ${ENVS_ARGS} \
                     ${DOCKER_FREQTRADE_IMAGE} download-data ${FT_CONFIGS_ARGS} --days ${ACTION_ARGS[0]} -t {1m,5m,15m,1h,4h,1d} \
                         --erase
@@ -264,12 +248,12 @@ handle_instance() {
         backtesting)
             instance_init && instance_init_backtesting
 
-            echo "Backtesting..."
+            echo "🚥 Backtesting..."
             FT_BACKTEST_TIMERANGE_ARG=""
             if [ ! -z ${ACTION_ARGS[0]} ]; then
                 FT_BACKTEST_TIMERANGE_ARG="--timerange ${ACTION_ARGS[0]}"
             fi
-            ${DOCKER_RUN} --name ${DOCKER_CONTAINER_NAME} --network freqtrade-bots \
+            ${DOCKER_RUN} --name ${DOCKER_CONTAINER_NAME} --network ${DOCKER_NETWORK} \
                 ${VOLUMES_ARGS} ${ENVS_ARGS} \
                 ${DOCKER_FREQTRADE_IMAGE} backtesting --enable-protections --strategy ${FT_STRATEGY} ${FT_CONFIGS_ARGS} ${FT_BACKTEST_TIMERANGE_ARG}
             exit 0
@@ -289,8 +273,21 @@ handle_instance() {
     esac
 }
 
+ui_init() {
+    VOLUMES=(
+        "/etc/localtime:/etc/localtime:ro"
+    )
+    VOLUMES_ARGS=""
+
+    ENVS_ARGS=""
+
+    DOCKER_CONTAINER_NAME="freqtrade-bot-ui"
+
+    UI_PUBLIC_PORT="${ACTION_ARGS[0]:-22222}"
+}
+
 ui_start() {
-    echo "Starting..."
+    echo "🚥 Starting..."
 
     ${DOCKER_RUN_WITH_RESTART} --name ${DOCKER_CONTAINER_NAME} \
         ${VOLUMES_ARGS} ${ENVS_ARGS} -p ${UI_PUBLIC_PORT}:80 \
@@ -301,7 +298,7 @@ ui_start() {
 }
 
 ui_stop() {
-    echo "Stopping..."
+    echo "🚥 Stopping..."
 
     ${DOCKER_KILL} ${DOCKER_CONTAINER_NAME} > /dev/null 2>&1
     ${DOCKER_RM} ${DOCKER_CONTAINER_NAME} > /dev/null 2>&1
@@ -329,11 +326,38 @@ handle_list() {
     # @todo To be continued
 }
 
+handle_init_install_upgrade() {
+    echo "🚥 Initializing/Installing/Upgrading..."
+    echo "--- Be patient, it could take from some seconds to some minutes! ---"
+    echo ""
+    echo "    > Downloading & building Freqtrade Docker image..."
+    ${DOCKER_BUILD} --quiet --no-cache --file .docker/freqtrade/Dockerfile --tag ${DOCKER_FREQTRADE_IMAGE} . > /dev/null 2>&1
+    echo "    > Downloading & building Freqtrade UI Docker image..."
+    ${DOCKER_BUILD} --quiet --no-cache --file .docker/freqtrade-ui/Dockerfile --tag ${DOCKER_FREQTRADE_UI_IMAGE} . > /dev/null 2>&1
+    echo "    > Downloading first official Freqtrade strategies and hyperopts..."
+    rm -rf .tmp/freqtrade-strategies && \
+        git clone --quiet https://github.com/freqtrade/freqtrade-strategies.git .tmp/freqtrade-strategies \
+        && mkdir -p strategies/official \
+        && cp -r .tmp/freqtrade-strategies/user_data/strategies/* strategies/official/ \
+        && mkdir -p hyperopts/official \
+        && cp -r .tmp/freqtrade-strategies/user_data/hyperopts/* hyperopts/official/ \
+        && rm -rf .tmp/freqtrade-strategies
+
+    echo ""
+    echo "✅ Ready to use!"
+    echo ""
+    display_help
+}
+
 prepare
 
 COMMAND="${1}"
 
 case ${COMMAND} in
+    init | install | upgrade)
+        handle_init_install_upgrade
+        exit 0
+        ;;
     list)
         handle_list
         exit 0

@@ -1,3 +1,6 @@
 .tmp/*
 configs/private
 instances/*
+strategies/*
+!strategies/Example.py
+hyperopts/*
