@@ -24,6 +24,7 @@ prepare() {
     if [[ `uname -m` == 'arm64' ]]; then
         DOCKER_BUILD="${DOCKER_BUILD} --platform linux/amd64"
         DOCKER_RUN="${DOCKER_RUN} --platform linux/amd64"
+        DOCKER_RUN_WITH_RESTART="${DOCKER_RUN_WITH_RESTART} --platform linux/amd64"
     fi
 
     docker network create ${DOCKER_NETWORK} > /dev/null 2>&1
@@ -281,7 +282,8 @@ ui_init() {
 
     ENVS_ARGS=""
 
-    DOCKER_CONTAINER_NAME="freqtrade-bot-ui"
+    DOCKER_CONTAINER_BASE_NAME="${DOCKER_CONTAINER_BASE_PREFIX}-${INSTANCE}"
+    DOCKER_CONTAINER_NAME="${DOCKER_CONTAINER_BASE_NAME}-ui"
 
     UI_PUBLIC_PORT="${ACTION_ARGS[0]:-22222}"
 }
@@ -292,7 +294,7 @@ ui_start() {
     ${DOCKER_RUN_WITH_RESTART} --name ${DOCKER_CONTAINER_NAME} \
         ${VOLUMES_ARGS} ${ENVS_ARGS} -p ${UI_PUBLIC_PORT}:80 \
         ${DOCKER_FREQTRADE_UI_IMAGE} \
-         > /dev/null 2>&1
+            > /dev/null 2>&1
 
     echo "Note: UI is available from http(s)://<your-ip-or-host>:${UI_PUBLIC_PORT}"
 }

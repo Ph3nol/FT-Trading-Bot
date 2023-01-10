@@ -57,6 +57,13 @@ Just use `./b` from your Trading Bot directory.
 ./b instance unicorn backtesting # Let's backtest!
 ```
 
+## Start common UI
+
+```
+./b ui start
+./b ui start 8888 # if you want 8888 as HTTP port
+```
+
 ## Thanks
 
 ![Thanks](https://media.giphy.com/media/PoImMjCPa8QaiBWJd0/giphy.gif)
