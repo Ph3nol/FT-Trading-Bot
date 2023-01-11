@@ -9,9 +9,9 @@ if [ ! -d "${BASE_CONFIGS_DIRECTORY}" ] || [ ! -d "${BASE_INSTANCES_DIRECTORY}" 
 fi
 
 prepare() {
-    DOCKER_FREQTRADE_IMAGE="ph3nol/ftbot/freqtrade:local"
-    DOCKER_FREQTRADE_UI_IMAGE="ph3nol/ftbot/freqtrade-ui:local"
-    DOCKER_CONTAINER_BASE_PREFIX="freqtrade-bots"
+    DOCKER_FREQTRADE_IMAGE="ph3nol/ft-trading-bot:latest"
+    DOCKER_FREQTRADE_UI_IMAGE="ph3nol/ft-trading-bot-ui:latest"
+    DOCKER_CONTAINER_BASE_PREFIX="ft-trading-bots"
     DOCKER_NETWORK="${DOCKER_CONTAINER_BASE_PREFIX}-network"
 
     DOCKER_BUILD="docker build"

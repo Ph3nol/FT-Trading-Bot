@@ -1,4 +1,6 @@
-FROM node:17.1.0-alpine as ui-builder
+FROM node:19.4.0-alpine as ui-builder
+
+ENV NODE_OPTIONS --openssl-legacy-provider
 
 RUN mkdir /app
 
@@ -10,18 +12,11 @@ RUN wget --quiet https://github.com/freqtrade/frequi/archive/refs/tags/0.6.3.tar
     && tar xf /tmp/ui.tar.gz -C /app --strip 1 \
     && rm /tmp/ui.tar.gz
 
-RUN apk add --update --no-cache python3 g++ make\
-    && yarn --ignore-engines \
+RUN apk add --update --no-cache python3 g++ make \
+    && yarn \
     && apk del python3 g++ make
 
-RUN yarn global add @vue/cli
-
-COPY . /app
-
-# The below flag should be removed, it's an incompatibility between
-# webpack and node17
-# ENV NODE_OPTIONS=--openssl-legacy-provider
-RUN NODE_OPTIONS=--max-old-space-size=8198 yarn build
+RUN yarn build
 
 FROM nginx:1.21.4-alpine
 COPY  --from=ui-builder /app/dist /etc/nginx/html
