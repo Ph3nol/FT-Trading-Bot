@@ -2,6 +2,28 @@
     "telegram": {
         "enabled": true,
         "token": "xxx",
-        "chat_id": "xxx"
+        "chat_id": "xxx",
+        "notification_settings": {
+            "status": "silent",
+            "warning": "on",
+            "startup": "off",
+            "buy": "silent",
+            "sell": {
+                "roi": "silent",
+                "emergency_sell": "on",
+                "force_sell": "on",
+                "sell_signal": "silent",
+                "trailing_stop_loss": "on",
+                "stop_loss": "on",
+                "stoploss_on_exchange": "on",
+                "custom_sell": "silent"
+            },
+            "buy_cancel": "silent",
+            "sell_cancel": "on",
+            "buy_fill": "off",
+            "sell_fill": "off",
+            "protection_trigger": "off",
+            "protection_trigger_global": "on"
+        }
     }
 }

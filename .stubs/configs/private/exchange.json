@@ -1,6 +1,5 @@
 {
     "exchange": {
-        "name": "binance",
         "key": "xxx",
         "secret": "xxx"
     }

@@ -4,23 +4,19 @@ FT_STRATEGY="Example" # .......... Change with your wanted Strategy (must be int
 FT_API_SERVER_PORT="12345" # ......... Choose a unique and free port for each instance, and use http(s)://<host>:<port> from UI to connect to
 FT_DRY_RUN_WALLET="500" # ............ Used for dry-run mode and backtesting
 
-# Add some configuration files.
-# USE ONLY CONFIGURATION PART YOU NEED.
-# Private ones are to be updated with your private informations.
+# Add some configuration files
 
 FT_INSTANCE_CONFIGS=(
-    /configs/private/base.config.1.json
-    # /configs/components/protections.json
-    # /configs/private/strategy.params.json
-    /configs/components/api.json
-    # /configs/private/api.cors.json
+    /configs/private/main.json
+    /configs/private/pairs.json
+    # /configs/private/protections.json
+    /configs/components/exchanges/binance.json # adapt to yours from `/configs/components/exchanges`
+    /configs/private/exchange.json
     # /configs/private/api.json
-    /configs/components/exchange.json
-    /configs/private/exchange.binance.json # or other
-    # /configs/components/exchange.pairs.volumes.binance.usdt.json # or other
-    # /configs/components/telegram.json
     # /configs/private/telegram.json
-    # /configs/components/do-not-run-at-start.json
+    # /configs/private/strategies/example.json # put your strategies configs into `/configs/private/strategies`
+    # /configs/components/settings/do-not-run-at-start.json
+    # /configs/components/settings/enable-force-buy.json
 )
 
 # Add some configuration files for backesting

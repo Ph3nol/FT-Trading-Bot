@@ -2,6 +2,13 @@
     "api_server": {
         "jwt_secret_key": "xxx",
         "username": "xxx",
-        "password": "xxx"
+        "password": "xxx",
+        "CORS_origins": [
+            "http://localhost"
+        ],
+        "enabled": true,
+        "listen_ip_address": "0.0.0.0",
+        "listen_port": 8080,
+        "verbosity": "error"
     }
 }
