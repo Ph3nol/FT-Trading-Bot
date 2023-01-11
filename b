@@ -332,10 +332,10 @@ handle_init_install_upgrade() {
     echo "🚥 Initializing/Installing/Upgrading..."
     echo "--- Be patient, it could take from some seconds to some minutes! ---"
     echo ""
-    echo "    > Downloading & building Freqtrade Docker image..."
-    ${DOCKER_BUILD} --quiet --no-cache --file .docker/freqtrade/Dockerfile --tag ${DOCKER_FREQTRADE_IMAGE} . > /dev/null 2>&1
-    echo "    > Downloading & building Freqtrade UI Docker image..."
-    ${DOCKER_BUILD} --quiet --no-cache --file .docker/freqtrade-ui/Dockerfile --tag ${DOCKER_FREQTRADE_UI_IMAGE} . > /dev/null 2>&1
+    echo "    > Downloading Freqtrade Docker image..."
+    docker pull --quiet ${DOCKER_FREQTRADE_IMAGE} > /dev/null 2>&1
+    echo "    > Downloading Freqtrade UI Docker image..."
+    docker pull --quiet ${DOCKER_FREQTRADE_UI_IMAGE} > /dev/null 2>&1
     echo "    > Downloading first official Freqtrade strategies and hyperopts..."
     rm -rf .tmp/freqtrade-strategies && \
         git clone --quiet https://github.com/freqtrade/freqtrade-strategies.git .tmp/freqtrade-strategies \
