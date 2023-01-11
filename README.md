@@ -85,11 +85,11 @@ Feeling generous?
 ### (Re)Build reference Docker images
 
 ```
-docker buildx build --no-cache --push \
+docker buildx build --no-cache --push --platform linux/amd64 \
     --file .docker/freqtrade/Dockerfile \
     --tag ph3nol/ft-trading-bot:latest .
 
-docker buildx build --no-cache --push \
+docker buildx build --no-cache --push --platform linux/amd64 \
     --file .docker/freqtrade-ui/Dockerfile \
     --tag ph3nol/ft-trading-bot-ui:latest .
 ```
