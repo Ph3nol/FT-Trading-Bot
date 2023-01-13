@@ -10,7 +10,9 @@ FT_INSTANCE_CONFIGS=(
     /configs/private/main.json
     /configs/private/pairs.json
     # /configs/private/protections.json
-    /configs/components/exchanges/binance.json # adapt to yours from `/configs/components/exchanges`
+    /configs/components/exchanges/binance/main.json # adapt to yours from `/configs/components/exchanges`
+    /configs/components/exchanges/binance/blacklist.json # adapt to yours from `/configs/components/exchanges`
+    /configs/components/exchanges/binance/pairlist.dynamic.busd.json # adapt to yours from `/configs/components/exchanges`
     /configs/private/exchange.json
     # /configs/private/api.json
     # /configs/private/telegram.json

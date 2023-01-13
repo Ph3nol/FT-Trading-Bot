@@ -236,12 +236,12 @@ handle_instance() {
             if [ ! "${ACTION_ARGS[1]}" = "" ]; then
                 ${DOCKER_RUN} --name ${DOCKER_CONTAINER_NAME} --network ${DOCKER_NETWORK} \
                     ${VOLUMES_ARGS} ${ENVS_ARGS} \
-                    ${DOCKER_FREQTRADE_IMAGE} download-data ${FT_CONFIGS_ARGS} --days ${ACTION_ARGS[0]} -t {1m,5m,15m,1h,4h,1d} \
+                    ${DOCKER_FREQTRADE_IMAGE} download-data ${FT_CONFIGS_ARGS} --days ${ACTION_ARGS[0]} -t {1m,5m,15m,1h,4h,12h,1d} \
                         --pairs ${ACTION_ARGS[1]}
             else
                 ${DOCKER_RUN} --name ${DOCKER_CONTAINER_NAME} --network ${DOCKER_NETWORK} \
                     ${VOLUMES_ARGS} ${ENVS_ARGS} \
-                    ${DOCKER_FREQTRADE_IMAGE} download-data ${FT_CONFIGS_ARGS} --days ${ACTION_ARGS[0]} -t {1m,5m,15m,1h,4h,1d} \
+                    ${DOCKER_FREQTRADE_IMAGE} download-data ${FT_CONFIGS_ARGS} --days ${ACTION_ARGS[0]} -t {1m,5m,15m,1h,4h,12h,1d} \
                         --erase
             fi
             exit 0
